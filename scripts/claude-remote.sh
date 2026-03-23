@@ -44,4 +44,12 @@ echo "Remote shell connection:"
 
 # Launch Claude with remote shell
 cd "$WORK_PATH"
-SHELL="$SCRIPT_DIR/zsh" exec claude --dangerously-skip-permissions "$@"
+SHELL="$SCRIPT_DIR/zsh" claude --dangerously-skip-permissions "$@"
+CLAUDE_EXIT=$?
+
+# Auto-stop EC2 instance after Claude exits
+if [[ "${EC2_ENABLED:-}" == "true" ]]; then
+    "$SCRIPT_DIR/ec2-cleanup.sh"
+fi
+
+exit $CLAUDE_EXIT
