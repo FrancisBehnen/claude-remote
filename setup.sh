@@ -53,7 +53,7 @@ mkdir -p "$BIN_DIR"
 # Create symlinks
 echo "Creating symlinks in $BIN_DIR..."
 
-COMMANDS=(claude-remote mount-remote unmount-remote sync-start sync-status sync-stop ssh-tmux ssh-wait remote-status)
+COMMANDS=(claude-remote mount-remote unmount-remote sync-start sync-status sync-stop ssh-tmux ssh-wait remote-status ec2-ensure ec2-cleanup)
 for cmd in "${COMMANDS[@]}"; do
     ln -sf "$SCRIPT_DIR/scripts/${cmd}.sh" "$BIN_DIR/$cmd"
     echo "  $cmd -> scripts/${cmd}.sh"
@@ -78,6 +78,13 @@ if ! command -v mutagen &> /dev/null; then
     echo "  or: port install mutagen"
 else
     echo "✓ mutagen installed"
+fi
+
+if ! command -v aws &> /dev/null; then
+    echo "  aws CLI not found (optional, needed for EC2 spot management)"
+    echo "  Install with: brew install awscli  or: port install py-awscli2"
+else
+    echo "✓ aws CLI installed"
 fi
 
 if ! command -v claude &> /dev/null; then
