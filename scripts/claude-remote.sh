@@ -17,6 +17,13 @@ source "$SCRIPT_DIR/../config.sh" 2>/dev/null || {
     exit 1
 }
 
+# Ensure EC2 instance is running (if enabled)
+if [[ "${EC2_ENABLED:-}" == "true" ]]; then
+    "$SCRIPT_DIR/ec2-ensure.sh" || exit 1
+    # Re-source config to pick up updated REMOTE_HOST
+    source "$SCRIPT_DIR/../config.sh"
+fi
+
 # Default path or use first argument
 if [[ -n "$1" && -d "$1" ]]; then
     WORK_PATH="$1"
